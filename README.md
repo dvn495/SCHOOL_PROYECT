@@ -1,4 +1,3 @@
-# SCHOOL_PROYECT
 ### Consultas sobre una tabla
 
 1. Devuelve un listado con el primer apellido, segundo apellido y el nombre de
@@ -81,14 +80,33 @@ WHERE cuatrimentre = 1 AND curso_asignatura = 3 AND id_grado_asignatura = 7;
 matriculado alguna vez en el Grado en Ingeniería Informática (Plan 2015).
 
 ```sql
-
+SELECT nombre_alumno, apellido1_alumno, apellido2_alumno
+FROM alumno AS a
+JOIN alumno_se_matricula_asignatura AS ma 
+  ON a.id_alumno = ma.id_alumno_matricula
+JOIN asignatura AS s 
+  ON ma.id_asignatura_matricula = s.id_asignatura
+WHERE s.id_grado_asignatura = 5 AND a.id_genero_alumno = 2;
+**+---------------+------------------+------------------+
+| nombre_alumno | apellido1_alumno | apellido2_alumno |
++---------------+------------------+------------------+
+| María         | González         | Núñez            |
++---------------+------------------+------------------+**
 ```
 
 1. Devuelve un listado con todas las asignaturas ofertadas en el Grado en
 Ingeniería Informática (Plan 2015).
 
 ```sql
-
+SELECT nombre_asignatura
+FROM asignatura
+WHERE id_grado_asignatura = 5;
++-------------------+
+| nombre_asignatura |
++-------------------+
+| Programación I    |
+| Programación II   |
++-------------------+
 ```
 
 1. Devuelve un listado de los profesores junto con el nombre del
@@ -98,14 +116,40 @@ departamento. El resultado estará ordenado alfabéticamente de menor a
 mayor por los apellidos y el nombre.
 
 ```sql
-
+SELECT p.apellido1_profesor, p.apellido2_profesor, p.nombre_profesor, d.departamento 
+FROM profesor AS p
+JOIN departamento AS d
+  ON p.id_departamento_profesor = d.id_departamento
+ORDER BY p.apellido1_profesor asc, p.apellido2_profesor asc, p.nombre_profesor asc;
++--------------------+--------------------+-----------------+--------------+
+| apellido1_profesor | apellido2_profesor | nombre_profesor | departamento |
++--------------------+--------------------+-----------------+--------------+
+| Jiménez            | Álvarez            | Laura           | Matemáticas  |
+| Mendoza            | Rodríguez          | Carlos          | Ciencias     |
+| Romero             | Santos             | Sofía           | Ingeniería   |
+| Ruiz               | Ortega             | Raúl            | Ingeniería   |
++--------------------+--------------------+-----------------+--------------+
 ```
 
 1. Devuelve un listado con el nombre de las asignaturas, año de inicio y año de
 fin del curso escolar del alumno con nif 26902806M.
 
 ```sql
-
+SELECT s.nombre_asignatura, c.inicio, c.finalizacion
+FROM alumno AS a
+JOIN alumno_se_matricula_asignatura AS ma 
+  ON a.id_alumno = ma.id_alumno_matricula
+JOIN curso_escolar AS c 
+  ON ma.id_curso_escolar_matricula = c.id_curso
+JOIN asignatura AS s 
+  ON ma.id_asignatura_matricula = s.id_asignatura
+WHERE a.nit_alumno = '26902806M';
++-------------------+------------+--------------+
+| nombre_asignatura | inicio     | finalizacion |
++-------------------+------------+--------------+
+| Programación II   | 2019-09-01 | 2020-06-30   |
+| Algebra           | 2019-09-01 | 2020-06-30   |
++-------------------+------------+--------------+
 ```
 
 1. Devuelve un listado con el nombre de todos los departamentos que tienen
@@ -113,14 +157,36 @@ profesores que imparten alguna asignatura en el Grado en Ingeniería
 Informática (Plan 2015).
 
 ```sql
-
+SELECT DISTINCT d.departamento
+FROM profesor AS p
+JOIN asignatura AS a 
+  ON p.id_profesor = a.id_profesor_asignatura
+JOIN departamento AS d 
+  ON p.id_departamento_profesor = d.id_departamento
+WHERE a.id_grado_asignatura = 5;
++--------------+
+| departamento |
++--------------+
+| Ingeniería   |
++--------------+
 ```
 
 1. Devuelve un listado con todos los alumnos que se han matriculado en
 alguna asignatura durante el curso escolar 2018/2019.
 
 ```sql
-
+SELECT nombre_alumno, apellido1_alumno, apellido2_alumno 
+FROM alumno AS a
+JOIN alumno_se_matricula_asignatura AS ma 
+  ON a.id_alumno = ma.id_alumno_matricula
+WHERE ma.id_curso_escolar_matricula = 1; 
++---------------+------------------+------------------+
+| nombre_alumno | apellido1_alumno | apellido2_alumno |
++---------------+------------------+------------------+
+| Juan          | García           | López            |
+| Ana           | Martínez         | Sánchez          |
+| Pedro         | Pérez            | Gómez            |
++---------------+------------------+------------------+
 ```
 
 ### Consultas multitabla (Composición externa)
@@ -135,33 +201,84 @@ alfabéticamente de menor a mayor por el nombre del departamento,
 apellidos y el nombre.
 
 ```sql
-
+SELECT d.departamento, p.apellido1_profesor, p.apellido2_profesor, p.nombre_profesor 
+FROM profesor AS p
+LEFT JOIN departamento AS d 
+  ON p.id_departamento_profesor = d.id_departamento
+ORDER BY d.departamento ASC, p.apellido1_profesor ASC, p.apellido2_profesor ASC, p.nombre_profesor ASC;
++--------------+--------------------+--------------------+-----------------+
+| departamento | apellido1_profesor | apellido2_profesor | nombre_profesor |
++--------------+--------------------+--------------------+-----------------+
+| Ciencias     | Mendoza            | Rodríguez          | Carlos          |
+| Ingeniería   | Romero             | Santos             | Sofía           |
+| Ingeniería   | Ruiz               | Ortega             | Raúl            |
+| Matemáticas  | Jiménez            | Álvarez            | Laura           |
++--------------+--------------------+--------------------+-----------------+
 ```
 
 1. Devuelve un listado con los profesores que no están asociados a un
 departamento.
 
 ```sql
-
+SELECT p.nombre_profesor, p.apellido1_profesor, p.apellido2_profesor 
+FROM profesor AS p
+WHERE p.id_departamento_profesor IS NULL;
++-----------------+--------------------+--------------------+
+| nombre_profesor | apellido1_profesor | apellido2_profesor |
++-----------------+--------------------+--------------------+
+| Sofía           | Romero             | Santos             |
++-----------------+--------------------+--------------------+
 ```
 
 1. Devuelve un listado con los departamentos que no tienen profesores
 asociados.
 
 ```sql
-
+SELECT d.departamento 
+FROM departamento AS d
+LEFT JOIN profesor AS p 
+  ON d.id_departamento = p.id_departamento_profesor
+WHERE p.id_departamento_profesor IS NULL;
++--------------+
+| departamento |
++--------------+
+| Literatura   |
++--------------+
 ```
 
 1. Devuelve un listado con los profesores que no imparten ninguna asignatura.
 
 ```sql
-
+SELECT p.nombre_profesor, p.apellido1_profesor, p.apellido2_profesor 
+FROM profesor AS p
+LEFT JOIN asignatura AS s 
+  ON p.id_profesor = s.id_profesor_asignatura
+WHERE s.id_profesor_asignatura IS NULL;
++-----------------+--------------------+--------------------+
+| nombre_profesor | apellido1_profesor | apellido2_profesor |
++-----------------+--------------------+--------------------+
+| Laura           | Jiménez            | Álvarez            |
+| Sofía           | Romero             | Santos             |
++-----------------+--------------------+--------------------+
 ```
 
 1. Devuelve un listado con las asignaturas que no tienen un profesor asignado.
 
 ```sql
-
+SELECT s.nombre_asignatura 
+FROM asignatura AS s
+LEFT JOIN profesor AS p 
+  ON s.id_profesor_asignatura = p.id_profesor
+WHERE s.id_profesor_asignatura IS NULL;
++-------------------+
+| nombre_asignatura |
++-------------------+
+| Programación II   |
+| Historia          |
+| Algebra           |
+| Redes             |
+| Lógica            |
++-------------------+
 ```
 
 1. Devuelve un listado con todos los departamentos que tienen alguna
@@ -170,7 +287,16 @@ debe mostrar el nombre del departamento y el nombre de la asignatura que
 no se haya impartido nunca.
 
 ```sql
-
+SELECT d.departamento, s.nombre_asignatura 
+FROM departamento AS d
+LEFT JOIN profesor AS p 
+  ON p.id_departamento_profesor = d.id_departamento
+LEFT JOIN asignatura AS s
+  ON s.id_profesor_asignatura = p.id_profesor
+LEFT JOIN alumno_se_matricula_asignatura AS ma 
+  ON s.id_asignatura = ma.id_asignatura_matricula
+WHERE ma.id_asignatura_matricula IS NULL;
+ //correguir//
 ```
 
 ### Consultas resumen
@@ -291,6 +417,10 @@ asociado y que no imparten ninguna asignatura.
 
 1. Devuelve un listado con todos los departamentos que no han impartido
 asignaturas en ningún curso escolar.
+
+```sql
+
+```
 
 ```sql
 
