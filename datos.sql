@@ -79,13 +79,13 @@ VALUES
 INSERT INTO alumno (id_alumno, nit_alumno, nombre_alumno, apellido1_alumno, apellido2_alumno, id_ciudad_alumno, id_direccion_alumno, id_telefono_alumno, fecha_nacimiento_alumno, id_genero_alumno)
 VALUES 
   (1, '12345678A', 'Juan', 'García', 'López', 1, 1, 1, '1999-01-15', 1),
-  (2, '87654321B', 'Ana', 'Martínez', 'Sánchez', 2, 2, 2, '1999-05-10', 2),
+  (2, '87654321B', 'Ana', 'Martínez', 'Sánchez', 2, 2, NULL, '1999-05-10', 2),
   (3, '34567890C', 'Pedro', 'Pérez', 'Gómez', 3, 3, 3, '2000-12-01', 1),
   (4, '23456789D', 'María', 'González', 'Núñez', 1, 4, 4, '2001-03-25', 2);
 
 INSERT INTO profesor (id_profesor, nit_profesor, nombre_profesor, apellido1_profesor, apellido2_profesor, id_ciudad_profesor, id_direccion_profesor, id_telefono_profesor, fecha_nacimiento_profesor, id_genero_profesor, id_departamento_profesor)
 VALUES 
-  (1, '12345678K', 'Carlos', 'Mendoza', 'Rodríguez', 1, 1, 1, '1980-04-15', 1, 1),
+  (1, '12345678K', 'Carlos', 'Mendoza', 'Rodríguez', 1, 1, NULL, '1980-04-15', 1, 1),
   (2, '87654321L', 'Laura', 'Jiménez', 'Álvarez', 2, 2, 2, '1982-07-20', 2, 2),
   (3, '23456789M', 'Raúl', 'Ruiz', 'Ortega', 1, 3, 3, '1985-09-15', 1, 3),
   (4, '34567890N', 'Sofía', 'Romero', 'Santos', 3, 3, 3, '1990-02-20', 2, 3);
@@ -99,7 +99,7 @@ VALUES
   (5, 'Historia', 4, 1, 1, 2, NULL, 3),
   (6, 'Algebra', 4, 2, 1, 2, NULL, 1),
   (7, 'Redes', 3, 1, 1, 1, NULL, 7),
-  (8, 'Lógica', 4, 1, 3, 2, NULL, 7);
+  (8, 'Lógica', 4, 1, 3, 1, NULL, 7);
 
 INSERT INTO alumno_se_matricula_asignatura (id_alumno_matricula, id_asignatura_matricula, id_curso_escolar_matricula)
 VALUES 
@@ -109,4 +109,3 @@ VALUES
   (4, 4, 2),
   (3, 5, 3),
   (4, 6, 2);
-
